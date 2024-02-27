@@ -49,7 +49,7 @@ int login(int clientSocket)
         int profSession;
         if (professorLogin(clientSocket, userName, password, &profSession))
         {
-            professorHandler(clientSocket);
+            professorHandler(clientSocket, profSession);
             return 1;
         }
         else
@@ -59,7 +59,7 @@ int login(int clientSocket)
         int studentSession;
         if (studentLogin(clientSocket, userName, password, &studentSession))
         {
-            studentHandler(clientSocket);
+            studentHandler(clientSocket, studentSession);
             return 1;
         }
         else

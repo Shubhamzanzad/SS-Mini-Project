@@ -11,9 +11,14 @@
 #include <ctype.h>
 
 #include "structures.h"
+#include "functions/menu.h"
+#include "functions/getSet.h"
+#include "functions/enrollment.h"
+#include "functions/course.h"
+#include "functions/student.h"
+#include "functions/professor.h"
 #include "functions/admin.h"
 #include "functions/login.h"
-#include "functions/student.h"
 
 #define MAX_CLIENTS 1000
 #define MAX_MSG_SIZE 4096

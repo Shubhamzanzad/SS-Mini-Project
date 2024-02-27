@@ -27,11 +27,10 @@ int main()
 
     if (connect(clientSocket, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
-        perror("Connction Failed");
+        perror("Connection Failed");
         exit(EXIT_FAILURE);
     }
-    printf("Connected to server");
-    int count = 1;
+    printf("Connected to server\n");
     connectServer(clientSocket);
     close(clientSocket);
     return 0;
@@ -40,35 +39,37 @@ int main()
 void connectServer(int clientSocket)
 {
     char msg[MAX_MSG_SIZE], temp[MAX_MSG_SIZE];
-    int writeBytes, bytesRecieved, len;
+    int writeBytes, bytesReceived, len;
     while (1)
     {
         memset(msg, 0, sizeof(msg));
         memset(temp, 0, sizeof(temp));
-        bytesRecieved = read(clientSocket, msg, sizeof(msg));
+        bytesReceived = read(clientSocket, msg, sizeof(msg));
 
-        if (bytesRecieved <= 0)
+        if (bytesReceived <= 0)
         {
             perror("Error while reading client socket");
             close(clientSocket);
             return;
         }
-        else if (strchr(msg, '~'))
+        else if (strchr(msg, '~') != NULL)
         {
-            // delimeter to close connection
-            strncpy(temp, msg, strlen(msg) - 2);
+            // Delimiter to close connection
+            strncpy(temp, msg, strlen(msg) - 1);
             printf("%s\n", temp);
             fflush(stdout);
-            printf("Closing connection");
+            printf("Closing connection\n");
+            break;
         }
-        else if (strchr(msg, '$'))
+        else if (strchr(msg, '$') != NULL)
         {
-            // delimeter to skip input
-            strncpy(temp, msg, strlen(msg) - 2);
+            // Delimiter to skip input
+            strncpy(temp, msg, strlen(msg) - 1);
             printf("%s\n", temp);
             fflush(stdout);
             printf("\n");
-            writeBytes = write(clientSocket, '$', 1);
+            char skip = '$';
+            writeBytes = write(clientSocket, &skip, 1);
             if (writeBytes == -1)
             {
                 perror("Error while writing to server");
@@ -91,14 +92,14 @@ void connectServer(int clientSocket)
             {
                 printf("%s", msg);
                 fflush(stdout);
-                scanf("%[^\n]%c", writeBuffer);
-                printf("\n");
+                fgets(writeBuffer, sizeof(writeBuffer), stdin);
+                writeBuffer[strcspn(writeBuffer, "\n")] = 0; // Remove newline character
             }
             writeBytes = write(clientSocket, writeBuffer, strlen(writeBuffer));
             if (writeBytes <= 0)
             {
                 perror("Error while writing to server");
-                return;
+                exit(EXIT_FAILURE);
             }
         }
     }
