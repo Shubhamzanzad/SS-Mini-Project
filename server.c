@@ -28,7 +28,6 @@ int main()
     int serverSocket, clientSocket;
     struct sockaddr_in server_addr, client_addr;
     socklen_t client_addr_len = sizeof(client_addr);
-    char mag[MAX_MSG_SIZE];
     int clientCount = 0;
 
     serverSocket = socket(AF_INET, SOCK_STREAM, 0);

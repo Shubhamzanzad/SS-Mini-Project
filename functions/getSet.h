@@ -2,7 +2,7 @@
 #define GETSET_H
 int setCount(int type)
 {
-    int fd = open("files/accountCount", O_RDWR);
+    int fd = open("files/accountCnt", O_RDWR);
     if (fd == -1)
     {
         exit(1);
@@ -48,11 +48,12 @@ int setCount(int type)
         else
             return rec.enrollments;
     }
+    return -1;
 }
 
 int getCount(int type)
 {
-    int fd = open("files/account_count", O_RDONLY);
+    int fd = open("files/accountCnt", O_RDONLY);
     if (fd == -1)
     {
         exit(1);
@@ -86,6 +87,7 @@ int getCount(int type)
         else
             return rec.enrollments;
     }
+    return -1;
 }
 
 #endif

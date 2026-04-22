@@ -4,15 +4,17 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <netinet/ip.h>
+#include <arpa/inet.h>
 #define MAX_MSG_SIZE 4096
 
 void connectServer(int clientSocket);
 
-int main()
+int main(int argc, char *argv[])
 {
     int clientSocket;
     struct sockaddr_in server_addr;
-    char buff[MAX_MSG_SIZE];
+
+    const char *serverIP = (argc > 1) ? argv[1] : "127.0.0.1";
 
     clientSocket = socket(AF_INET, SOCK_STREAM, 0);
     if (clientSocket == -1)
@@ -23,14 +25,18 @@ int main()
 
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(9008);
-    server_addr.sin_addr.s_addr = INADDR_ANY;
+    if (inet_pton(AF_INET, serverIP, &server_addr.sin_addr) != 1)
+    {
+        fprintf(stderr, "Invalid server IP address: %s\n", serverIP);
+        exit(EXIT_FAILURE);
+    }
 
     if (connect(clientSocket, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
         perror("Connection Failed");
         exit(EXIT_FAILURE);
     }
-    printf("Connected to server\n");
+    printf("Connected to server at %s:9008\n", serverIP);
     connectServer(clientSocket);
     close(clientSocket);
     return 0;
@@ -39,7 +45,7 @@ int main()
 void connectServer(int clientSocket)
 {
     char msg[MAX_MSG_SIZE], temp[MAX_MSG_SIZE];
-    int writeBytes, bytesReceived, len;
+    int writeBytes, bytesReceived;
     while (1)
     {
         memset(msg, 0, sizeof(msg));

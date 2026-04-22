@@ -5,7 +5,7 @@
 int login(int clientSocket)
 {
     char msg[MAX_MSG_SIZE];
-    write(clientSocket, LOGIN_MENU, 110);
+    write(clientSocket, LOGIN_MENU, strlen(LOGIN_MENU));
     memset(msg, 0, sizeof(msg));
     int bytesRecieved = read(clientSocket, msg, sizeof(msg));
     if (bytesRecieved <= 0)
@@ -46,6 +46,7 @@ int login(int clientSocket)
             return 0;
         break;
     case 2:
+    {
         int profSession;
         if (professorLogin(clientSocket, userName, password, &profSession))
         {
@@ -55,7 +56,9 @@ int login(int clientSocket)
         else
             return 0;
         break;
+    }
     case 3:
+    {
         int studentSession;
         if (studentLogin(clientSocket, userName, password, &studentSession))
         {
@@ -65,6 +68,7 @@ int login(int clientSocket)
         else
             return 0;
         break;
+    }
     default:
         break;
     }

@@ -4,6 +4,7 @@
 struct Course getCourses(int clientSocket, int id)
 {
     struct Course c;
+    memset(&c, 0, sizeof(c));
     int fd = open("files/courses", O_RDONLY);
     if (fd == -1)
     {
@@ -11,7 +12,7 @@ struct Course getCourses(int clientSocket, int id)
     }
     if (getCount(3) < id)
     {
-        write(clientSocket, "Wrong Course id..~\n", 20);
+        write(clientSocket, "Wrong Course id..~\n", 19);
         return c;
     }
     struct flock lock;
@@ -27,7 +28,6 @@ struct Course getCourses(int clientSocket, int id)
         close(fd);
     }
     lseek(fd, (id - 1) * sizeof(struct Course), SEEK_SET);
-    int bytesRead;
     read(fd, &c, sizeof(struct Course));
     lock.l_type = F_UNLCK;
     fcntl(fd, F_SETLK, &lock);
@@ -60,7 +60,7 @@ void setAvailability(int clientSocket, int id, int cnt)
     }
     lseek(fd, (id - 1) * sizeof(struct Course), SEEK_SET);
     struct Course c;
-    int bytesRead;
+    memset(&c, 0, sizeof(c));
     read(fd, &c, sizeof(struct Course));
     c.available += cnt;
     lseek(fd, (id - 1) * sizeof(struct Course), SEEK_SET);
